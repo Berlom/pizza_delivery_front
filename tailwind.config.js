@@ -1,10 +1,9 @@
 module.exports = {
-  purge: [],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./pages/*.{jsx}", "./components/*.{jsx}"],
   theme: {
     extend: {
-      fontFamily: { 'logo': ['"Corinthia"','cursive']},
-    }
+      fontFamily: { logo: ['"Corinthia"', "cursive"] },
+    },
   },
   variants: {
     extend: {},
