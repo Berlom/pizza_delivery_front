@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./pages/*.{jsx,html,js}", "./components/*.{jsx,html,js}"],
+  content: ["./pages/**/*.{jsx,html,js}", "./components/**/*.{jsx,html,js}"],
   theme: {
     extend: {
       fontFamily: { logo: ['"Corinthia"', "cursive"] },

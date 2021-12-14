@@ -5,15 +5,15 @@ import SidebarButtonComponent from "../components/SidebarButtonComponent";
 
 export default function Sidebar() {
   return (
-    <div className="bg-red-900 col-span-2 row-span-5 flex flex-col p-4 gap-4">
+    <div className="shadow-md shadow-[#34271D] z-20 bg-[#34271D] col-span-2 row-span-5 flex flex-col p-4 gap-4">
       <Link href="/">
         <a>
           <SidebarButtonComponent icon={faHome} name="HomePage" />
         </a>
       </Link>
-      <Link href="/commands">
+      <Link href="/">
         <a>
-          <SidebarButtonComponent icon={faTruck} name="commands" />
+          <SidebarButtonComponent icon={faTruck} name="Commandes" />
         </a>
       </Link>
     </div>

@@ -14,7 +14,7 @@ export default function index() {
     <div className=" grid grid-cols-10 grid-rows-6 h-screen w-screen">
       <Navbar />
       <Sidebar />
-      <div className="bg-blue-900 col-span-8 row-span-5">.</div>
+      <div className="bg-[#ECE5F0] col-span-8 row-span-5">.</div>
     </div>
   );
 }
