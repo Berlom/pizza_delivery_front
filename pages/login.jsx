@@ -9,9 +9,9 @@ export default function login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    // if (localStorage.getItem("sanctum_token")) {
-    //   router.push("/");
-    // }
+    if (localStorage.getItem("sanctum_token")) {
+      router.push("/");
+    }
   }, []);
   const login = async () => {
     try {
