@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { faShoppingCart, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import NavbarIconComponent from "../components/NavbarIconComponent";
 import { useRouter } from "next/router";
@@ -6,6 +6,12 @@ import Link from "next/link";
 
 export default function Navbar() {
   const router = useRouter();
+  const [userPoints, setUserPoints] = useState(0);
+
+  useEffect(() => {
+    setUserPoints(JSON.parse(localStorage.getItem("user")).points);
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("sanctum_token");
     router.push("/login");
@@ -29,6 +35,9 @@ export default function Navbar() {
             <NavbarIconComponent icon={faShoppingCart} />
           </a>
         </Link>
+        <div className="transition-all duration-300 scale-125 ml-4 py-1 px-2 rounded-md hover:bg-white text-white cursor-pointer hover:text-[#795F53]  hover:shadow-md hover:shadow-[#34271D]">
+          {userPoints ?? 0}
+        </div>
       </div>
     </div>
   );
