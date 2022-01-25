@@ -7,18 +7,18 @@ import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
-export default function menuItem() {
+export default function ingredientItem() {
   const router = useRouter();
-  const [menu, setMenu] = useState(null);
-  const [ingredient, setIngredient] = useState("");
-  const [ingredients, setIngredients] = useState([]);
+  const [menu, setMenu] = useState("");
+  const [ingredient, setIngredient] = useState(null);
+  const [menus, setMenus] = useState([]);
   const [editable, setEditable] = useState(false);
   const [price, setPrice] = useState(0);
 
   const updatePrice = async (event) => {
     try {
       if (event.key === "Enter") {
-        setMenu({ ...menu, price: price });
+        setIngredient({ ...ingredient, price: price });
         setEditable(false);
       }
     } catch (error) {
@@ -26,27 +26,23 @@ export default function menuItem() {
     }
   };
 
-  const addIngredient = async (event) => {
+  const addMenu = async (event) => {
     try {
       if (event.key === "Enter") {
         event.target.value = "";
-        const ing = await axios.get(
-          "http://localhost:8000/api/ingredient/" + ingredient,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-              Authorization: "Bearer " + localStorage.getItem("sanctum_token"),
-            },
-          }
-        );
-        ingredients.push(ing.data[0].id);
-        setIngredients(ingredients);
-        const newMenu = { ...menu };
-        newMenu.ingredient.push(ing.data[0]);
-        console.log(newMenu);
-        setMenu(newMenu);
-        //fix your spaghetti code
+        const men = await axios.get("http://localhost:8000/api/menu/" + menu, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Bearer " + localStorage.getItem("sanctum_token"),
+          },
+        });
+        menus.push(men.data[0].id);
+        setMenus(menus);
+        const newIngredient = { ...ingredient };
+        newIngredient.menu.push(men.data[0]);
+        console.log(newIngredient);
+        setIngredient(newIngredient);
       }
     } catch (error) {
       alert("invalid ingredient name");
@@ -54,14 +50,13 @@ export default function menuItem() {
   };
 
   const update = async () => {
-    console.log(menu);
     try {
       const response = await axios.put(
-        "http://localhost:8000/api/menu/update/" + router.query.id,
+        "http://localhost:8000/api/ingredient/update/" + router.query.id,
         {
-          name: menu.name,
-          price: menu.price,
-          ingredients: ingredients,
+          name: ingredient.name,
+          price: ingredient.price,
+          menu_id: menus,
         },
         {
           headers: {
@@ -82,8 +77,8 @@ export default function menuItem() {
       router.push("/");
     if (!router.isReady) return;
     try {
-      const menuData = await axios.get(
-        "http://localhost:8000/api/menu/" + router.query.id,
+      const ingredientData = await axios.get(
+        "http://localhost:8000/api/ingredient/" + router.query.id,
         {
           headers: {
             "Content-Type": "application/json",
@@ -92,20 +87,20 @@ export default function menuItem() {
           },
         }
       );
-      setMenu(menuData.data[0]);
-      setPrice(menuData.data[0].price);
-      console.log(menuData.data[0]);
+      setIngredient(ingredientData.data[0]);
+      setPrice(ingredientData.data[0].price);
+      console.log(ingredientData.data[0]);
       let arr = [];
-      menuData.data[0].ingredient.map((elt) => {
+      ingredientData.data[0].menu.map((elt) => {
         arr.push(elt.id);
       });
-      setIngredients(arr);
+      setMenus(arr);
       console.log(arr);
     } catch (error) {
       console.log(error);
-      router.push("/menu");
+      router.push("/ingredient");
     }
-  }, [router.isReady, setMenu]);
+  }, [router.isReady, setIngredient]);
   return (
     <div className=" grid grid-cols-10 grid-rows-6 h-screen w-screen">
       <Navbar />
@@ -113,7 +108,7 @@ export default function menuItem() {
       <div className="bg-[#ECE5F0] col-span-8 row-span-5 p-8 select-none">
         <div className="flex flex-col justify-around items-center gap-4 ">
           <div className="font-logo text-4xl text-[#D3635F] decoration-wavy underline decoration-[#EEA144]">
-            {menu ? menu.name : ""}
+            {ingredient ? ingredient.name : ""}
           </div>
           <div className="flex px-8 py-2 justify-around w-full">
             <div className="text-[#795F53] font-bold">Price</div>
@@ -121,7 +116,7 @@ export default function menuItem() {
               <input
                 type="text"
                 className="outline-none px-4 py-2 bg-[#ECE5F0] ring-2 ring-[#795F53] rounded-md"
-                defaultValue={menu.price}
+                defaultValue={ingredient.price}
                 onChange={(e) => {
                   setPrice(e.target.value);
                 }}
@@ -129,7 +124,9 @@ export default function menuItem() {
               />
             ) : (
               <div className="flex gap-3">
-                <div className="text-[#795F53]">{menu ? menu.price : ""} </div>
+                <div className="text-[#795F53]">
+                  {ingredient ? ingredient.price : ""}{" "}
+                </div>
                 <div className="">
                   <FontAwesomeIcon
                     icon={faPen}
@@ -145,22 +142,22 @@ export default function menuItem() {
           <div className="flex px-8 py-2 justify-around w-full">
             <div className="text-[#795F53] font-bold flex">Ingredients</div>
             <div className="flex flex-col gap-3" id="ing">
-              {menu
-                ? menu.ingredient?.map((elt) => {
+              {ingredient
+                ? ingredient.menu?.map((elt) => {
                     return (
                       <p
                         className="text-[#795F53] cursor-pointer"
                         key={elt.id}
                         onClick={() => {
-                          let arr = ingredients.filter((e) => {
+                          let arr = menus.filter((e) => {
                             return e !== elt.id;
                           });
-                          setIngredients(arr);
-                          let newArr = menu.ingredient.filter((e) => {
+                          setMenus(arr);
+                          let newArr = ingredient.menu.filter((e) => {
                             return e.id !== elt.id;
                           });
-                          const newMenu = { ...menu, ingredient: newArr };
-                          setMenu(newMenu);
+                          const newIngredient = { ...ingredient, menu: newArr };
+                          setIngredient(newIngredient);
                         }}
                       >
                         {" "}
@@ -172,11 +169,11 @@ export default function menuItem() {
               <input
                 type="text"
                 className="outline-none px-4 py-2 bg-[#ECE5F0] ring-2 ring-[#795F53] rounded-md"
-                placeholder="Add a new ingredient"
+                placeholder="Add a new menu"
                 onChange={(e) => {
-                  setIngredient(e.target.value);
+                  setMenu(e.target.value);
                 }}
-                onKeyPress={addIngredient}
+                onKeyPress={addMenu}
               />
             </div>
           </div>

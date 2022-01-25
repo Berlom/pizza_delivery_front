@@ -92,7 +92,15 @@ export default function carts() {
     } catch (err) {
       console.log(err);
     }
-  }, [setCarts]);
+  }, [setCarts, setTotal]);
+
+  useEffect(() => {
+    let tot = 0;
+    carts?.map((elt) => {
+      tot += elt.unit_price * elt.quantity;
+    });
+    setTotal(tot);
+  }, [carts]);
 
   const deleteFromCart = async (id) => {
     try {
