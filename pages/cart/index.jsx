@@ -60,7 +60,8 @@ export default function carts() {
           },
         }
       );
-      console.log(response);
+      console.log(response.data.user);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       window.location.reload(true);
     }
   };

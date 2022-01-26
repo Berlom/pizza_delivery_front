@@ -15,7 +15,16 @@ export default function add() {
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [ings, setIngs] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [points, setPoints] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    let tot = selectedMenu?.price ?? 0;
+    selectedMenu?.ingredient.map((elt) => {
+      if (ings.includes(elt.name)) tot += elt.price;
+    });
+    tot *= quantity;
+    setTotal(tot);
+  }, [selectedMenu, quantity, ings]);
 
   const addToCart = async () => {
     try {
@@ -152,6 +161,10 @@ export default function add() {
                 }}
               />
             </div>
+          </div>
+          <div className="flex px-8 py-2 justify-around w-full">
+            <div className="text-[#795F53] font-bold flex">Total</div>
+            <div className="flex flex-col gap-3">{total}</div>
           </div>
           <div>
             <button

@@ -12,7 +12,7 @@ import SidebarButtonComponent from "../components/SidebarButtonComponent";
 export default function Sidebar() {
   const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
-    setIsAdmin(JSON.parse(localStorage.getItem("user")).role === "admin");
+    setIsAdmin(JSON.parse(localStorage.getItem("user"))?.role === "admin");
   }, []);
 
   return (
@@ -27,11 +27,15 @@ export default function Sidebar() {
           <SidebarButtonComponent icon={faTruck} name="Commandes" />
         </a>
       </Link>
-      <Link href="/cart/add">
-        <a>
-          <SidebarButtonComponent icon={faAdd} name="Add to cart" />
-        </a>
-      </Link>
+      {!isAdmin ? (
+        <Link href="/cart/add">
+          <a>
+            <SidebarButtonComponent icon={faAdd} name="Add to cart" />
+          </a>
+        </Link>
+      ) : (
+        ""
+      )}
       {isAdmin ? (
         <Link href="/menu">
           <a>
